@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Roboto';
+  background-color: #111;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  border-radius: 20px;
+  overflow: hidden;  
+  background-color: #1E2833;  
+  padding: 16px;
+}
+
+.interface {
+  color: #C5C6C7;
+  height: 100px;
+  background-color: #0F1722;
+  border-radius: 20px;
+}
+
+.entry-line {
+  height: 60px;
+  font-size: 32px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0 8px 16px;
+}
+
+.output-display {
+  height: 40px;
+  color: #A5A6A7;
+  font-size: 24px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 12px;
+}
+
+.columns {
+  display: flex;
+  padding-top: 16px;
+  border-radius: 20px;
+  display: flex;
+  gap: 8px;
+}
+
+.column-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  width: 60px;
+  height: 60px;
+  color: #C5C6C7;
+  font-size: 28px;
+  background-color: #1F2833;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 30px;
+  border: none;
+  margin: 4px;
+  transition: transform 0.1s ease,
+}
+
+button:hover {
+  background-color: #1C2633;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  background-color: #1A2433;
+  transform: scale(0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.operation {
+  color: #66FCF1;
+}
+
+.fa-delete-left {
+  pointer-events: none;
+}
+
+.dot {
+  font-size: 36px;
+}
+
+.function {
+  background-color: #66FCF1;
+  color: #1F2833;
+  font-size: 24px;
+}
+
+.function:hover {
+  background-color: #55EBE0;
+  color: #2F2844;
+}
+
+.function:active {
+  background-color: #44DAD0;
+}
+
+.equal {
+  flex: 1;
+  border-radius: 30px;
+  background-color: #66FCF1;
+  color: #1F2833;
+}
+
+.equal:hover {
+  background-color: #55EBE0;
+  color: #2F2844;
+}
+
+.equal:active {
+  background-color: #44DAD0;
+}
+
+/* COLORS 
+0B0C10
+1F2833
+C5C6C7
+66FCF1
+45A29E
+*/
+
+
