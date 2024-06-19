@@ -1,41 +1,33 @@
-function Calculator() {
-  this.operations = {
-    '+': (a, b) => a + b,
-    '-': (a, b) => a - b,
-    '*': (a, b) => a * b,
-    '/': (a, b) => a / b,
-    '^': (a, b) => a ** b,
-  };
+class Calculator {
+  constructor() {
+    this.operations = {
+      '+': (a, b) => a + b,
+      '-': (a, b) => a - b,
+      '*': (a, b) => a * b,
+      '/': (a, b) => a / b,
+      '^': (a, b) => a ** b,
+    };
+    this.operators = ['^', '/', '*', '+', '-'];
+  }
 
-  // BODMAS: Bracket Order Divide Multiply Add Subtract
-  this.operators = ['^', '/', '*', '+', '-'];
-
-  this.operate = function (arr) {
+  operate(arr) {
     let a, b, ans;
 
-    for (let i = 0; i < this.operators.length; i++) {
-      let j = 0;
+    for (const operator of this.operators) {
+      while (arr.includes(operator)) {
+        const opIndex = arr.indexOf(operator);
+        const op = arr[opIndex];
+        a = +arr[opIndex - 1];
+        b = +arr[opIndex + 1];
 
-      while (j < arr.length) {
-        if (arr.includes(this.operators[i])) {
-
-          let opIndex = arr.indexOf(this.operators[i]);
-          let op = arr[opIndex];
-          a = +arr[opIndex - 1];
-          b = +arr[opIndex + 1];
-
-          ans = this.operations[op](a, b);
-          arr.splice(opIndex - 1, 3, ans);
-        }
-
-        j++;
+        ans = this.operations[op](a, b);
+        arr.splice(opIndex - 1, 3, ans);
       }
     }
 
     return ans;
-  };
+  }
 }
-
 
 const calc = new Calculator();
 const REGEX = /(\d*\.?\d+|[\+\-\*\/\^])/g;
@@ -47,110 +39,82 @@ let finishCalculation = false;
 const entryLine = document.querySelector('.entry-line');
 const outputDisplay = document.querySelector('.output-display');
 
-let entryLength;
-function updateEntLen() {
-  entryLength = entryLine.textContent.length;
+function updateEntryLength() {
+  entryLine.dataset.length = entryLine.textContent.length;
 }
 
-// Initialize entry length on page load
-updateEntLen();
-
-keyboardInput();
-clear();
-
-/* ***KEYBOARD INPUT HANDLING*** */
-function keyboardInput() {
-  document.addEventListener('keydown', (e) => {
-    const key = e.key;
-    if (calc.operators.includes(key)) {
-      operatorInput(key);
-    } else if (key >= '0' && key <= '9') {
-      numInput(key);
-    } else if (e.key === 'Enter') {
-      enterInput();
-    }
-  });
-  // backspaceDel();
+function init() {
+  updateEntryLength();
+  setupKeyboardInput();
+  setupClearFunctions();
 }
 
-/* ***BUTTONS INPUT HANDLING*** */
+function setupKeyboardInput() {
+  document.addEventListener('keydown', handleKeyboardInput);
+}
 
+function handleKeyboardInput(e) {
+  const key = e.key;
+  if (calc.operators.includes(key)) {
+    handleOperatorInput(key);
+  } else if (key >= '0' && key <= '9') {
+    handleNumberInput(key);
+  } else if (key === 'Enter') {
+    handleEnterInput();
+  }
+}
 
-// Clear functions
-function clear() {
+function setupClearFunctions() {
   document.addEventListener('click', (e) => {
-    const origin = e.target;
-    const func = origin.getAttribute('data-function');
-    
+    const func = e.target.getAttribute('data-function');
     if (func === 'clear-all') {
       clearAll();
     } else if (func === 'delete') {
-      deleteLeft();
+      deleteLastEntry();
     }
-  })
+  });
 }
 
 function clearAll() {
   entryLine.textContent = '';
   outputDisplay.textContent = '';
-  entryLine.style.fontSize = '32px';
-  updateEntLen();
+  updateEntryLength();
   finishCalculation = false;
 }
 
-function clearEntry() {
-
+function deleteLastEntry() {
+  entryLine.textContent = entryLine.textContent.slice(0, -1);
+  updateEntryLength();
 }
 
-function deleteLeft() {
-  let entryTextArray = Array.from(entryLine.textContent); 
-  entryTextArray.splice(-1, 1);
-  entryLine.textContent = entryTextArray.join('');
-  updateEntLen();
-}
-
-
-
-function operatorInput(key) {
-  const operator = key; 
+function handleOperatorInput(key) {
   const recentEntry = entryLine.textContent.slice(-1);
-
   if (recentEntry >= '0' && recentEntry <= '9') {
-    appendEntry(operator);
+    appendToEntryLine(key);
   } else if (calc.operators.includes(recentEntry)) {
-    let entLineArr = entryLine.textContent.split('');
-    entLineArr.splice(-1, 1, key);
-    entryLine.textContent = entLineArr.join('');
+    entryLine.textContent = entryLine.textContent.slice(0, -1) + key;
   }
 }
 
-
-function numInput(key) {
-  const number = key;
-  if (!finishCalculation) {
-    appendEntry(number);
-  } else {
+function handleNumberInput(key) {
+  if (finishCalculation) {
     clearAll();
-    appendEntry(number);
   }
+  appendToEntryLine(key);
 }
 
-
-// APPEND TO ENTRY LINE
-function appendEntry(entry) {
-  if (entryLength < 15) {
+function appendToEntryLine(entry) {
+  if (entryLine.dataset.length < MAX_LENGTH) {
     entryLine.textContent += entry;
-    updateEntLen();
-  } else if (entryLength === 15) {
+    updateEntryLength();
+  } else if (entryLine.dataset.length === MAX_LENGTH) {
     entryLine.style.fontSize = '30px';
     entryLine.textContent += entry;
-    updateEntLen();
+    updateEntryLength();
   }
 }
 
-
-// KEYBOARD ENTER INPUT
-function enterInput() {
+function handleEnterInput() {
   if (!finishCalculation) {
     result = calc.operate(entryLine.textContent.match(REGEX));
     if (result !== null) {
@@ -163,23 +127,4 @@ function enterInput() {
   }
 }
 
-
-
-// BACKSPACE DELETE FEATURE
-function backspaceDel() {
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'Backspace') {
-      entryLine.textContent = '';
-    } else if (e.key === 'Backspace') {
-      deleteLeft();
-    }
-  });
-}
-
-
-/* SYMBOLS 
-Plus: + (U+002B)
-Minus: − (U+2212)
-Multiplication: × (U+00D7)
-Division: ÷ (U+00F7)
-*/
+init();
