@@ -43,9 +43,14 @@ body {
   color: #A5A6A7;
   font-size: 24px;
   display: flex;
-  justify-content: flex-end;
   align-items: flex-end;
   padding: 12px;
+}
+
+.answer {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .columns {
@@ -71,7 +76,7 @@ button {
   border-radius: 30px;
   border: none;
   margin: 4px;
-  transition: transform 0.1s ease,
+  transition: transform 0.1s ease;
 }
 
 button:hover {
@@ -85,12 +90,16 @@ button:active {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+button > i {
+  pointer-events: none;
+}
+
 .operation {
   color: #66FCF1;
 }
 
-.fa-delete-left {
-  pointer-events: none;
+.brackets {
+  font-weight: bold;
 }
 
 .dot {
