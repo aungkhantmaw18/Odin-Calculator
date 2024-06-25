@@ -25,13 +25,12 @@ class Calculator {
         if (exp[index] === '√') {
           ans = this.operations['√'](+exp[index+1]);
           exp.splice(index, 2, ans);
-          console.log(ans);
           continue;
         }
         while (operatorSet.includes(exp[index])) {
           const op = exp[index];
-          const a = +exp[index - 1];
-          const b = +exp[index + 1];
+          a = +exp[index - 1];
+          b = +exp[index + 1];
 
           if (op === '÷' && b === 0) return 'Zero Division Error';
 
@@ -67,12 +66,15 @@ const calc = new Calculator();
 const REGEX = /(\d*\.?\d+|[\+\-\×\*\/\÷\^\√\(\)])/g;
 const MAX_LENGTH = 15;
 
+let openBracketCount = 0;
+let closeBracketCount = 0;
 let result = 0;
 let finishCalculation = false;
 
 const outputDisplay = document.querySelector('.output-display');
 const entryLine = document.querySelector('.entry-line');
-const answer = document.querySelector('.answer');
+const answer = document.querySelector('.answer-display');
+const ans = document.querySelector('.ans');
 
 function updateEntryLength() {
   entryLine.dataset.length = entryLine.textContent.length;
@@ -95,8 +97,11 @@ function handleButtonInput(e) {
     const operation = e.target.getAttribute('data-operation');
     if (operation === '√') {
       let arr = entryLine.textContent.match((REGEX));
-      let lastEntry = arr.splice(-1, 0, '√');
-      entryLine.textContent = arr.join('');
+      if (arr[arr.length - 2] !== '√') {
+        arr.splice(-1, 0, '√');
+        entryLine.textContent = arr.join('');
+      }
+      
     }
   }
 }
@@ -107,7 +112,6 @@ function setupKeyboardInput() {
 
 function handleKeyboardInput(e) {
   const key = e.key;
-  console.log(key);
   if (calc.operators.includes(key)) {
     handleOperatorInput(changeToSymbol(key));
   } else if (key >= '0' && key <= '9') {
@@ -116,6 +120,8 @@ function handleKeyboardInput(e) {
     handleEnterInput();
   } else if (key === 'Backspace') {
     deleteLastEntry();
+  } else if (key === '(' || key === ')') {
+    handleBrackets(key);
   }
 }
 
@@ -139,9 +145,20 @@ function setupClearFunctions() {
 }
 
 function clearAll() {
-  entryLine.textContent = '';
-  answer.textContent = '';
+  entryLine.style.color = '#C5C6C7';
+  outputDisplay.style.color = '#A5A6A7';
+
   entryLine.style.fontSize = '32px';
+  entryLine.style.justifyContent = 'flex-start';
+  entryLine.textContent = '';
+
+  answer.style.flex = 1;
+  ans.textContent = 'Ans:';
+  answer.textContent = '';
+
+  openBracketCount = 0;
+  closeBracketCount = 0;
+
   updateEntryLength();
   finishCalculation = false;
 }
@@ -158,8 +175,25 @@ function clearEntry() {
 }
 
 function deleteLastEntry() {
+  if (entryLine.textContent.slice(-1) === '(') {
+    openBracketCount--;
+  } else if (entryLine.textContent.slice(-1) === ')') {
+    closeBracketCount--;
+  }
   entryLine.textContent = entryLine.textContent.slice(0, -1);
   updateEntryLength();
+}
+
+function handleBrackets(key) {
+  if (key === '(') {
+    appendToEntryLine(key);
+    openBracketCount++;
+  } else {
+    if (closeBracketCount < openBracketCount) {
+      appendToEntryLine(key);
+      closeBracketCount++;
+    }
+  }
 }
 
 function handleOperatorInput(key) {
@@ -193,64 +227,81 @@ function appendToEntryLine(entry) {
   }
 }
 
-// function handleEnterInput() {
-//   if (!finishCalculation) {
-//     const expression = entryLine.textContent.match(REGEX);
-//     if (validateExpression(expression)) {
-//       result = calc.operate(expression);
-//       if (result !== null) {
-//         answer.textContent = result;
-//         finishCalculation = true;
-//       }
-//     } else {
-//       entryLine.textContent = 'Error: Invalid Expression';
-//       entryLine.style.color = 'red';
-//       setTimeout(() => {
-//         entryLine.textContent = '';
-//         entryLine.style.color = 'black';
-//         updateEntryLength();
-//       }, 2000); // Clear the error message after 2 seconds
-//     }
-//   }
-// }
 function handleEnterInput() {
-  const expression = entryLine.textContent.match(REGEX);
-  result = calc.evaluateExpression(expression);
-  answer.textContent = result;
-  finishCalculation = true;
+  if (!finishCalculation) {
+    let expression = entryLine.textContent.match(REGEX);
+
+    if (validateExpression(expression)) {
+      expression = preprocessExpression(expression);
+      result = calc.evaluateExpression(expression);
+
+      if (result !== null) {
+        answer.textContent = result;
+        finishCalculation = true;
+      }
+    } else {
+      error();
+    }
+  }
 }
 
+function preprocessExpression(exp) {
+  for (let i = 0; i < exp.length; i++) {
+    if (exp[i] === ')') {
+      let j = i + 1;
+      if (exp[j] === '(') {
+        exp.splice(j, 0, '×');
+      }
+    }
+  }
+  return exp;
+}
 
-// function validateExpression(exp) {
-//   // Ensure expression is not null or empty
-//   if (!exp || exp.length === 0) return false;
+function validateExpression(exp) {
+  if (!exp || exp.length === 0) return false;
 
-//   // Check if the first or last element is an operator (invalid)
-//   if (calc.operators.includes(exp[0]) || calc.operators.includes(exp[exp.length - 1])) {
-//     return false;
-//   }
+  if (exp[0] === '√' && !isNaN(exp[1])) return true;
 
-//   // Track counts of operands and operators
-//   let operators = 0;
-//   let operands = 0;
+  if (calc.operators.includes(exp[0]) || calc.operators.includes(exp[exp.length - 1])) {
+    return false;
+  }
 
-//   for (let i = 0; i < exp.length; i++) {
-//     const element = exp[i];
+  let operators = 0;
+  let operands = 0;
 
-//     if (calc.operators.includes(element)) {
-//       operators++;
-//       // Check for consecutive operators (invalid)
-//       if (i > 0 && calc.operators.includes(exp[i - 1])) {
-//         return false;
-//       }
-//     } else {
-//       operands++;
-//     }
-//   }
+  for (let i = 0; i < exp.length; i++) {
+    const element = exp[i];
 
-//   // The number of operators should be one less than the number of operands
-//   return operators === operands - 1;
-// }
+    if (calc.operators.includes(element)) {
+      operators++;
+      // Check for consecutive operators (invalid)
+      if (i > 0 && calc.operators.includes(exp[i - 1])) {
+        return false;
+      }
+    } else {
+      operands++;
+    }
+  }
+
+  // The number of operators should be one less than the number of operands
+  return operators === operands - 1 || operators < operands;
+}
+
+function error() {
+  entryLine.style.color = '#66FCF1';
+  outputDisplay.style.color = '#66FCF1';
+
+  entryLine.style.fontSize = '26px';
+  entryLine.style.justifyContent = 'Center';
+  entryLine.textContent = 'Error: Invalid Expression';
+
+  answer.style.flex = 0;
+  outputDisplay.style.justifyContent = 'center';
+  ans.textContent = '[AC]:';
+  answer.textContent = 'Cancel';
+
+  finishCalculation = true;
+}
 
 
 init();
