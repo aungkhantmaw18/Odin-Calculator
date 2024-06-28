@@ -18,7 +18,7 @@ body {
 .container {
   border-radius: 20px;
   overflow: hidden;  
-  background-color: #1E2833;  
+  background-color: #1E2833;
   padding: 16px;
 }
 
@@ -31,7 +31,7 @@ body {
 
 .entry-line {
   height: 60px;
-  font-size: 32px;
+  font-size: 24px;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -53,7 +53,7 @@ body {
   justify-content: flex-end;
 }
 
-.columns {
+.buttons {
   display: flex;
   padding-top: 16px;
   border-radius: 20px;
@@ -61,7 +61,11 @@ body {
   gap: 8px;
 }
 
-.column-wrapper {
+.rows-wrapper {
+  display: flex;
+}
+
+.column {
   display: flex;
   flex-direction: column;
 }
@@ -101,6 +105,10 @@ button > i {
 .brackets {
   font-weight: bold;
 }
+
+/* .zero {
+  flex: 1;
+} */
 
 .dot {
   font-size: 36px;

@@ -17,32 +17,40 @@
         <div class="answer-display"></div>
       </div>
     </div>
-    <div class="columns">
-      <div class="column1 column-wrapper">
-        <button class="operation brackets" data-type='operation' data-operation="brackets">(  )</button>
-        <button class="operation" data-type='operation' data-operation="^"><i class="fa-solid fa-superscript"></i></button>
-        <button data-type="number" data-number="7">7</button>
-        <button data-type="number" data-number="4">4</button>
-        <button data-type="number" data-number="1">1</button>
-        <button class="operation" data-type='operation' data-operation="+/-"><i class="fa-solid fa-plus-minus"></i></button>
+    <div class="buttons">
+      <div class="rows">
+        <div class="rows1 rows-wrapper">
+          <button class="operation brackets" data-type='operation' data-operation="(">(</button>
+          <button class="operation brackets" data-type='operation' data-operation=')'>)</button>
+          <button class="function" data-type='function' data-function="clear-all">AC</button>
+        </div>
+        <div class="rows2 rows-wrapper">
+          <button class="operation" data-type='operation' data-operation="^"><i class="fa-solid fa-superscript"></i></button>
+          <button class="operation" data-type='operation' data-operation="√"><i class="fa-solid fa-square-root-variable"></i></button>
+          <button class="operation" data-type='operation' data-operation="÷"><i class="fa-solid fa-divide"></i></button>
+        </div>
+        <div class="rows3 rows-wrapper">
+          <button data-type="number" data-number="7">7</button>
+          <button data-type="number" data-number="8">8</button>
+          <button data-type="number" data-number="9">9</button>
+        </div>
+        <div class="rows4 rows-wrapper">
+          <button data-type="number" data-number="4">4</button>
+          <button data-type="number" data-number="5">5</button>
+          <button data-type="number" data-number="6">6</button>
+        </div>
+        <div class="rows5 rows-wrapper">
+          <button data-type="number" data-number="1">1</button>
+          <button data-type="number" data-number="2">2</button>
+          <button data-type="number" data-number="3">3</button>
+        </div>
+        <div class="rows6 rows-wrapper">
+          <button class="operation" data-type='operation' data-operation="+/-"><i class="fa-solid fa-plus-minus"></i></button>
+          <button class="zero" data-type="number" data-number="0">0</button>
+          <button class="dot" data-type='function' data-function='dot'>.</button>
+        </div>
       </div>
-      <div class="column2 column-wrapper">
-        <button class="function" data-type='function' data-function="clear-entry">CE</button>
-        <button class="operation" data-type='operation' data-operation="√"><i class="fa-solid fa-square-root-variable"></i></button>
-        <button data-type="number" data-number="8">8</button>
-        <button data-type="number" data-number="5">5</button>
-        <button data-type="number" data-number="2">2</button>
-        <button data-type="number" data-number="0">0</button>
-      </div>
-      <div class="column3 column-wrapper">
-        <button class="function" data-type='function' data-function="clear-all">AC</button>
-        <button class="operation" data-type='operation' data-operation="÷"><i class="fa-solid fa-divide"></i></button>
-        <button data-type="number" data-number="9">9</button>
-        <button data-type="number" data-number="6">6</button>
-        <button data-type="number" data-number="3">3</button>
-        <button class="" data-type='function' data-function='dot'>.</button>
-      </div>
-      <div class="column4 column-wrapper">
+      <div class="column">
         <button class="function" data-type='function' data-function="delete"><i class="fa-solid fa-delete-left"></i></button>
         <button class="operation" data-type='operation' data-operation="×"><i class="fa-solid fa-xmark"></i></button>
         <button class="operation" data-type='operation' data-operation="-"><i class="fa-solid fa-minus"></i></button>
